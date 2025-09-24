@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<style>
+	p{
+        color: brown;
+        width: 100%;
+       padding: 50px;
+       text-align: center;
+    	background-color:yellow;
+    }
+
+    button{
+    width: 50px;
+    height: 30px;
+    background-color:lightblue;
+    }
+
+</style>
+<body>
+
+<p id ="stopwatch">0</p>
+<button id = "start">시작</button>
+<button id = "stop">중지</button>
+
+</body>
+</html>
+<script>
+
+	const start_btn = document.getElementById("start");
+    const stop_btn = document.getElementById("stop");
+    const stopwatch = document.getElementById("stopwatch");
+	let secon = 0;
+    let timeId;
+    
+    function uptime(){
+        secon++;
+        stopwatch.innerText = secon;
+    }
+
+
+    function stopCLock(){
+        
+    }
+
+    start_btn.addEventListener('click',() =>{
+        if(!timeId)
+        timeId = setInterval(uptime,1000);
+    });
+
+    stop_btn.addEventListener('click',() =>{
+            clearInterval(timeId);
+            timeId = null;
+    });
+
+
+</script>
