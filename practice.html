@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+
+</head>
+
+
+<body>
+
+<button id = sf>stringfy</button>
+<div id = sf_div></div>
+
+<br>
+
+<button id = ps>pharse</button>
+<div id = ps_div></div>
+</body>
+
+</html>
+<script>
+const user = {name:"Jueun", age:21};
+const sf_btn = document.getElementById("sf");
+const ps_btn = document.getElementById("ps");
+
+function toJson(){
+	document.getElementById("sf_div").innerHTML = JSON.stringify(user);
+}
+
+function toJS(){
+	let jstr = document.getElementById("ps_div").innerHTML;
+    let obj  = JSON.parse(jstr);
+    document.getElementById("user").innerHTML = obj.name + "(" + obj.age +")";
+}
+
+sf_btn.addEventListener("click",toJson);
+ps_btn.addEventListener("click",toJS);
+
+window.onload = function(){
+	
+}
+</script>
+

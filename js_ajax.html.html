@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body{
+        background-color: rgb(215, 248, 250);
+    }
+	input{
+        width:60px ;
+    }
+    button{
+        margin: 5px;
+        padding: 10px;
+        background-color: rgb(159, 222, 253);
+        border-radius: 10px;
+        border: none;
+        font-weight: 10;
+        border-color: blue;
+    }
+    input{
+        padding: 5px;
+        padding: 10px;
+        margin: 2px;
+        border-radius: 10px;
+        border: none;
+        border-color: rgb(206, 194, 178);
+    }
+    div{
+        padding-top: 200px;
+        padding-left: 500px;
+    }
+    li{
+        margin: 5px;
+        font-weight: 10;
+    }
+</style>
+</head>
+<body>
+    <div>
+	<button id = "btnList">메뉴 가져오기</button><br>
+    <input type = "text" id = "id" placeholder="id">
+    <input type = "text" id = "main" placeholder="main">
+    <input type = "text" id = "sub"placeholder="sub">
+    <input type = "text" id = "dessert" placeholder="dessert">
+    <input type = "text" id = "price" placeholder="price">
+	<br>
+    <button id = "btnAdd">메뉴 추가</button>
+    <button id = "btnMod">메뉴 수정</button>
+    <button id = "btnDel">메뉴 삭제</button><br>
+    <ul id = "list"></ul>
+    </div>
+
+</body>
+</html>
+
+<script>
+
+	function postData(){
+      let id = document.getElementById("id");
+      let main = document.getElementById("main");
+      let sub = document.getElementById("sub");
+      let dessert = document.getElementById("dessert");
+      let price = document.getElementById("price");
+
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST" ,"http://localhost:3001/daily_food");
+      xhr.setRequestHeader("content-type", "application/json;charset=UTF-8")
+
+      const data = {id:id.value,main: main.value, sub: sub.value, dessert: dessert.value, price: price.value};
+
+      xhr.send(JSON.stringify(data)); //입력값을 문자열로 JSON에 전달
+      xhr.onload = () => { //익명함수
+        if (xhr.status === 201){ //xhr상태가 201이면 (201이 뭐지
+            id.value= "";
+            main.value = ""; //입력칸 비우기
+            sub.value = "";
+            dessert.value="";
+            price.value="";
+            getDaily(); //student목록 보여주기
+          }else{
+          console.log(xhr.status, xhr.statusText);//201아니면 현상태 보여주기
+          }
+        }
+    };
+
+        function getDaily(){
+            let list = document.getElementById("list");
+            fetch("http://localhost:3001/daily_food")
+            .then(response => response.json())
+            .then(data => {
+                let html="";
+                data.forEach(user => {
+                    html += `<li> ${user.id}. ${user.main} - ${user.sub} - ${user.dessert} - ${user.price}</li>`;
+            })
+            list.innerHTML = html;
+            })
+            .catch(error => {
+                console.log('에러', error);
+            })
+        };
+
+    function putDaily(){
+        //수정하고 싶은 번호 + 내용들을 입력하고 수정버튼을 눌렸다면
+      let id = document.getElementById("id");
+      let main = document.getElementById("main");
+      let sub = document.getElementById("sub");
+      let dessert = document.getElementById("dessert");
+      let price = document.getElementById("price");
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT" ,"http://localhost:3001/daily_food/" + id.value);
+      xhr.setRequestHeader("content-type", "application/json;charset=UTF-8")
+
+      const data = {id:id.value,main: main.value, sub: sub.value, dessert: dessert.value, price: price.value};
+
+        //입력값을 문자열로 JSON에게 전달
+        xhr.send(JSON.stringify(data));
+       
+        //200이거나 204이면 
+         xhr.onload =()=>{
+            if(xhr.status == 200||xhr.status == 204){
+                id.value= "";
+                main.value = ""; //입력칸 비우기
+                sub.value = "";
+                dessert.value="";
+                price.value="";
+                getDaily();//현상태 보여주기
+            }
+            else{
+                console.log(xhr.status, xhr.statusText);
+            }//아니면, 현상태 콘솔에 표현하기
+        }
+    };
+
+    function delDaily(){
+      let id = document.getElementById("id");
+      let main = document.getElementById("main");
+      let sub = document.getElementById("sub");
+      let dessert = document.getElementById("dessert");
+      let price = document.getElementById("price");
+        const xhr = new XMLHttpRequest();
+        xhr.open("DELETE", "http://localhost:3001/daily_food/" +  id.value);
+        //삭제함
+        //200이나 2004면
+        xhr.onload = () => {
+            if(xhr.status == 200 || xhr.status == 204){
+                id.value= "";
+                main.value = ""; //입력칸 비우기
+                sub.value = "";
+                dessert.value="";
+                price.value="";
+                getDaily();
+            }else{
+                console.log(xhr.status, xhr.statusText);
+            }
+        }
+        //현상태 보여주기
+        //아니면 콘솔 현상태
+        xhr.send();
+    };
+
+    
+
+    document.getElementById('btnList').addEventListener('click',getDaily);
+    document.getElementById('btnAdd').addEventListener('click',postData);
+    document.getElementById('btnMod').addEventListener('click',putDaily);
+    document.getElementById('btnDel').addEventListener('click',delDaily);
+</script>
